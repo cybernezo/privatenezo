@@ -5,7 +5,7 @@ local TweenService   = game:GetService("TweenService")
 local LP             = Players.LocalPlayer
 local Camera         = workspace.CurrentCamera
 
-local FlySpeed  = 60
+local FlySpeed  = 250
 local MenuKey   = Enum.KeyCode.RightShift
 
 local flyEnabled  = false
@@ -35,13 +35,13 @@ local function drawBones(char)
         local partB = char:FindFirstChild(pair[2])
         if partA and partB then
             local line = Instance.new("LineHandleAdornment")
-            line.Thickness  = 2
-            line.Color3     = Color3.fromRGB(255, 255, 60)
+            line.Thickness   = 2
+            line.Color3      = Color3.fromRGB(255, 30, 30)
             line.AlwaysOnTop = true
-            line.ZIndex     = 5
-            line.Length     = 0
-            line.Adornee    = partA
-            line.Parent     = partA
+            line.ZIndex      = 5
+            line.Length      = 0
+            line.Adornee     = partA
+            line.Parent      = partA
             table.insert(lines, {line=line, a=partA, b=partB})
         end
     end
@@ -94,72 +94,55 @@ local function addESP(player)
     espObjects[player] = {}
     local function applyToChar(char)
         if not char then return end
-        local hrp = char:WaitForChild("HumanoidRootPart", 5)
+        local hrp  = char:WaitForChild("HumanoidRootPart", 5)
         if not hrp then return end
-        local hum  = char:FindFirstChildOfClass("Humanoid")
         local head = char:FindFirstChild("Head")
         local folder = Instance.new("Folder")
         folder.Name = "ESP_"..player.Name
         folder.Parent = ESPFolder
-        local hl = Instance.new("Highlight")
-        hl.Name = "HL_"..player.Name
-        hl.Adornee = char
-        hl.FillColor = Color3.fromRGB(255,30,30)
-        hl.OutlineColor = Color3.fromRGB(0,220,255)
-        hl.FillTransparency = 0.55
-        hl.OutlineTransparency = 0
-        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-        hl.Parent = folder
-        espObjects[player].hl = hl
+
         local bb = Instance.new("BillboardGui")
         bb.Name = "BB_"..player.Name
-        bb.Size = UDim2.new(0,120,0,58)
-        bb.StudsOffset = Vector3.new(0,3.2,0)
+        bb.Size = UDim2.new(0, 120, 0, 36)
+        bb.StudsOffset = Vector3.new(0, 3.2, 0)
         bb.AlwaysOnTop = true
         bb.LightInfluence = 0
         bb.Adornee = head or hrp
         bb.Parent = folder
+
         local nameLbl = Instance.new("TextLabel", bb)
-        nameLbl.Size = UDim2.new(1,0,0,18)
-        nameLbl.Position = UDim2.new(0,0,0,0)
+        nameLbl.Size = UDim2.new(1, 0, 0, 26)
+        nameLbl.Position = UDim2.new(0, 0, 0, 0)
         nameLbl.BackgroundTransparency = 1
         nameLbl.Text = player.Name
-        nameLbl.TextColor3 = Color3.new(1,1,1)
+        nameLbl.TextColor3 = Color3.new(1, 1, 1)
         nameLbl.TextStrokeTransparency = 0
         nameLbl.Font = Enum.Font.GothamBold
         nameLbl.TextSize = 13
-        local distLbl = Instance.new("TextLabel", bb)
-        distLbl.Size = UDim2.new(1,0,0,14)
-        distLbl.Position = UDim2.new(0,0,0,18)
-        distLbl.BackgroundTransparency = 1
-        distLbl.Text = "0m"
-        distLbl.TextColor3 = Color3.fromRGB(100,255,150)
-        distLbl.TextStrokeTransparency = 0
-        distLbl.Font = Enum.Font.Gotham
-        distLbl.TextSize = 11
+        nameLbl.Visible = false
+
         local hpBg = Instance.new("Frame", bb)
-        hpBg.Size = UDim2.new(1,0,0,9)
-        hpBg.Position = UDim2.new(0,0,0,35)
-        hpBg.BackgroundColor3 = Color3.fromRGB(40,8,8)
+        hpBg.Size = UDim2.new(1, 0, 0, 8)
+        hpBg.Position = UDim2.new(0, 0, 0, 20)
+        hpBg.BackgroundColor3 = Color3.fromRGB(30, 8, 8)
         hpBg.BorderSizePixel = 0
-        Instance.new("UICorner", hpBg).CornerRadius = UDim.new(1,0)
+        hpBg.Visible = false
+        Instance.new("UICorner", hpBg).CornerRadius = UDim.new(1, 0)
+
         local hpFill = Instance.new("Frame", hpBg)
-        hpFill.Size = UDim2.new(1,0,1,0)
-        hpFill.BackgroundColor3 = Color3.fromRGB(50,255,80)
+        hpFill.Size = UDim2.new(1, 0, 1, 0)
+        hpFill.BackgroundColor3 = Color3.fromRGB(50, 255, 80)
         hpFill.BorderSizePixel = 0
-        Instance.new("UICorner", hpFill).CornerRadius = UDim.new(1,0)
-        local hpTxt = Instance.new("TextLabel", hpBg)
-        hpTxt.Size = UDim2.new(1,0,1,0)
-        hpTxt.BackgroundTransparency = 1
-        hpTxt.TextColor3 = Color3.new(1,1,1)
-        hpTxt.TextStrokeTransparency = 0
-        hpTxt.Font = Enum.Font.GothamBold
-        hpTxt.TextSize = 7
-        hpTxt.Text = "100/100"
-        espObjects[player].distLbl = distLbl
-        espObjects[player].hpFill  = hpFill
-        espObjects[player].hpTxt   = hpTxt
-        espObjects[player].hum     = hum
+        Instance.new("UICorner", hpFill).CornerRadius = UDim.new(1, 0)
+
+        local hum = char:FindFirstChildOfClass("Humanoid")
+
+        espObjects[player].nameLbl = nameLbl
+        espObjects[player].hpBg   = hpBg
+        espObjects[player].hpFill = hpFill
+        espObjects[player].hum    = hum
+        espObjects[player].bb     = bb
+
         local boneLines = drawBones(char)
         espObjects[player].bones = boneLines
     end
@@ -177,17 +160,22 @@ RunService.Heartbeat:Connect(function()
     for player, data in pairs(espObjects) do
         local c = player.Character
         local r = c and c:FindFirstChild("HumanoidRootPart")
-        if data.distLbl and r and myRoot then
-            local d = math.floor((r.Position - myRoot.Position).Magnitude)
-            data.distLbl.Text = d.."m"
+        if r and myRoot then
+            local dist = (r.Position - myRoot.Position).Magnitude
+            local visible = dist <= 150
+            if data.nameLbl then data.nameLbl.Visible = visible end
+            if data.hpBg    then data.hpBg.Visible    = visible end
         end
         if data.hum and data.hpFill then
             local hp  = data.hum.Health
             local mx  = math.max(data.hum.MaxHealth, 1)
             local pct = math.clamp(hp/mx, 0, 1)
-            data.hpFill.Size = UDim2.new(pct,0,1,0)
-            data.hpFill.BackgroundColor3 = Color3.fromRGB(math.floor(255*(1-pct))+50, math.floor(255*pct)+50, 50)
-            if data.hpTxt then data.hpTxt.Text = math.floor(hp).."/"..math.floor(mx) end
+            data.hpFill.Size = UDim2.new(pct, 0, 1, 0)
+            data.hpFill.BackgroundColor3 = Color3.fromRGB(
+                math.floor(255*(1-pct))+50,
+                math.floor(255*pct)+50,
+                50
+            )
         end
         if data.bones then updateBones(data.bones) end
     end
@@ -378,7 +366,7 @@ end
 
 local function buildEntity(pos, entityType)
     local model = Instance.new("Model")
-    model.Name = "👾_Entity_"..entityType
+    model.Name = "Entity_"..entityType
     local function addPart(name, size, color, cf, transparency)
         local p = Instance.new("Part", model)
         p.Name = name; p.Size = size; p.BrickColor = BrickColor.new(color)
@@ -631,7 +619,6 @@ local function stopFreeCam()
     UserInputService.MouseIconEnabled = true
 end
 
-
 pcall(function() LP.PlayerGui:FindFirstChild("LocalMenu"):Destroy() end)
 pcall(function()
     local cg = game:GetService("CoreGui")
@@ -654,7 +641,7 @@ Gui.ZIndexBehavior   = Enum.ZIndexBehavior.Global
 Gui.Parent           = getStreamProofParent()
 
 local Frame = Instance.new("Frame")
-Frame.Size             = UDim2.new(0, 230, 0, 0)  
+Frame.Size             = UDim2.new(0, 230, 0, 0)
 Frame.Position         = UDim2.new(0, 20, 0, 20)
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BackgroundTransparency = 0.45
@@ -665,9 +652,9 @@ Frame.Parent           = Gui
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
 
 local layout = Instance.new("UIListLayout", Frame)
-layout.Padding    = UDim.new(0, 0)
+layout.Padding       = UDim.new(0, 0)
 layout.FillDirection = Enum.FillDirection.Vertical
-layout.SortOrder  = Enum.SortOrder.LayoutOrder
+layout.SortOrder     = Enum.SortOrder.LayoutOrder
 
 local padding = Instance.new("UIPadding", Frame)
 padding.PaddingTop    = UDim.new(0, 6)
@@ -675,7 +662,6 @@ padding.PaddingBottom = UDim.new(0, 6)
 padding.PaddingLeft   = UDim.new(0, 10)
 padding.PaddingRight  = UDim.new(0, 10)
 
--- Drag du carré
 local dragging, dragStart, frameStart = false, nil, nil
 Frame.InputBegan:Connect(function(inp)
     if inp.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -696,11 +682,11 @@ end)
 local ROW_H = 28
 local function makeRow()
     local r = Instance.new("Frame")
-    r.Size             = UDim2.new(1, 0, 0, ROW_H)
+    r.Size = UDim2.new(1, 0, 0, ROW_H)
     r.BackgroundTransparency = 1
-    r.BorderSizePixel  = 0
-    r.LayoutOrder      = 0
-    r.Parent           = Frame
+    r.BorderSizePixel = 0
+    r.LayoutOrder = 0
+    r.Parent = Frame
     return r
 end
 
@@ -732,7 +718,6 @@ end
 local function makeToggle(txt, order, cb)
     local r = makeRow()
     r.LayoutOrder = order
-
     local lbl = Instance.new("TextLabel", r)
     lbl.Size = UDim2.new(1, -20, 1, 0)
     lbl.Position = UDim2.new(0, 0, 0, 0)
@@ -743,7 +728,6 @@ local function makeToggle(txt, order, cb)
     lbl.TextSize = 12
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.ZIndex = 3
-
     local dot = Instance.new("Frame", r)
     dot.Size = UDim2.new(0, 8, 0, 8)
     dot.Position = UDim2.new(1, -10, 0.5, -4)
@@ -751,12 +735,10 @@ local function makeToggle(txt, order, cb)
     dot.BorderSizePixel = 0
     dot.ZIndex = 3
     Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
-
     local btn = Instance.new("TextButton", r)
     btn.Size = UDim2.new(1, 0, 1, 0)
     btn.BackgroundTransparency = 1
     btn.Text = ""; btn.ZIndex = 4
-
     local isOn = false
     local function sv(on)
         isOn = on
@@ -771,14 +753,12 @@ local function makeToggle(txt, order, cb)
     btn.MouseButton1Click:Connect(function()
         sv(not isOn); cb(isOn)
     end)
-    return sv 
+    return sv
 end
 
--- Action : bouton texte simple
 local function makeAction(txt, order, cb)
     local r = makeRow()
     r.LayoutOrder = order
-
     local lbl = Instance.new("TextLabel", r)
     lbl.Size = UDim2.new(1, -32, 1, 0)
     lbl.BackgroundTransparency = 1
@@ -788,23 +768,21 @@ local function makeAction(txt, order, cb)
     lbl.TextSize = 12
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.ZIndex = 3
-
     local go = Instance.new("TextButton", r)
     go.Size = UDim2.new(0, 26, 0, 18)
     go.Position = UDim2.new(1, -28, 0.5, -9)
     go.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     go.BackgroundTransparency = 0.3
-    go.Text = "▶"
+    go.Text = ">"
     go.TextColor3 = Color3.fromRGB(180, 180, 180)
     go.Font = Enum.Font.Gotham
     go.TextSize = 10
     go.BorderSizePixel = 0
     go.ZIndex = 4
     Instance.new("UICorner", go).CornerRadius = UDim.new(0, 3)
-
     go.MouseButton1Click:Connect(function()
         local ok, msg = cb()
-        lbl.Text = ok and ("✓ "..txt) or ("✗ "..txt)
+        lbl.Text = ok and ("+ "..txt) or ("x "..txt)
         lbl.TextColor3 = ok and Color3.fromRGB(100,255,100) or Color3.fromRGB(255,100,100)
         task.delay(2.5, function()
             lbl.Text = txt
@@ -813,9 +791,8 @@ local function makeAction(txt, order, cb)
     end)
 end
 
-
 makeLabel("VISUEL", 1)
-makeToggle("ESP ", 2, function(on)
+makeToggle("ESP", 2, function(on)
     espEnabled = on
     if on then
         for _, p in ipairs(Players:GetPlayers()) do addESP(p) end
@@ -829,8 +806,8 @@ makeToggle("ESP ", 2, function(on)
 end)
 
 makeSep(3)
-makeLabel("DÉPLACEMENT", 4)
-makeToggle("Fly (BASIC)", 5, function(on)
+makeLabel("DEPLACEMENT", 4)
+makeToggle("Fly", 5, function(on)
     flyEnabled = on
     if on then startFly() end
 end)
@@ -840,17 +817,16 @@ makeToggle("Noclip", 6, function(on)
 end)
 
 makeSep(7)
-makeLabel("TÉLÉPORTATION", 8)
+makeLabel("TELEPORTATION", 8)
 makeAction("TP RANDOM", 9, tpRandom)
 
 makeSep(10)
-makeLabel("CAMÉRA", 11)
+makeLabel("CAMERA", 11)
 local setFreeCamToggle = makeToggle("Free Cam (V)", 12, function(on)
     freeCamEnabled = on
     if on then startFreeCam() else stopFreeCam() end
 end)
 
--- Redimensionne Frame à la taille du contenu
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     Frame.Size = UDim2.new(0, 230, 0, layout.AbsoluteContentSize.Y + 14)
 end)
@@ -872,7 +848,6 @@ UserInputService.InputBegan:Connect(function(inp, gpe)
     end
 end)
 
--- Respawn
 LP.CharacterAdded:Connect(function()
     task.wait(1)
     if flyEnabled then startFly() end
