@@ -859,6 +859,6 @@ LP.CharacterAdded:Connect(function()
     end
 end)
 
-makeLabel("Version 10.2", 10)
+makeLabel("Version 10.2", 15)
 
 print("Private By Nezo")
