@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 
-local ALLOWED_USERIDS = {10386158945, 2370015588}
+local ALLOWED_USERIDS = {10386158945, 23700155882}
 local player = Players.LocalPlayer
 
 local function notify(title, text, duration)
