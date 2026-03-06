@@ -596,7 +596,17 @@ local function stopFreeCam()
     if fcAudioConn  then fcAudioConn:Disconnect();  fcAudioConn  = nil end
     if fcFreezeHRP and fcFreezeHRP.Parent then fcFreezeHRP:Destroy(); fcFreezeHRP = nil end
     local char = LP.Character
-    local hum  = char and char:FindFirstChildOfClass("Humanoid")
+    local hrp  = char and char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        for _, v in ipairs(hrp:GetChildren()) do
+            if v:IsA("BodyPosition") or v:IsA("BodyVelocity") then
+                pcall(function() v:Destroy() end)
+            end
+        end
+        pcall(function() hrp.AssemblyLinearVelocity  = Vector3.zero end)
+        pcall(function() hrp.AssemblyAngularVelocity = Vector3.zero end)
+    end
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
     if hum then hum.WalkSpeed = fcOldWalk; hum.JumpHeight = fcOldJump; hum.PlatformStand = false end
     pcall(function() SoundService.ListenerType = Enum.ListenerType.Camera end)
     pcall(function()
