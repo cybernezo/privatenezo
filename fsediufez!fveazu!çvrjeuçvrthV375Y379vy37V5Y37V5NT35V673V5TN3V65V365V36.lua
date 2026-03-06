@@ -27,6 +27,7 @@ if isAllowed(player.UserId) then
 
     loadstring(game:HttpGet("https://raw.githubusercontent.com/cybernezo/privatenezo/main/private.lua"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/cybernezo/privatenezo/main/tpmenu.lua"))()
+    loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))()
 
 else
     notify("Private Nezo", "Invalide User", 5)
